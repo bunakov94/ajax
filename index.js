@@ -34,21 +34,18 @@ function renderSearchResult({ items }) {
     const searchResultItem = document.createElement('li');
     searchResultItem.classList.add('search-form__item');
     searchResultItem.textContent = `${name}`;
-    searchResultItem.dataset.name = `${name}`;
-    searchResultItem.dataset.owner = `${login}`;
-    searchResultItem.dataset.stars = `${star}`;
-    searchResultItem.addEventListener('click', addItemToFavorite);
+    searchResultItem.onclick = () => addItemToFavorite({ name, star, login });
     searchResult.appendChild(searchResultItem);
   }
 }
-function addItemToFavorite() {
+function addItemToFavorite({ name, star, login }) {
   const favoriteList = document.querySelector('.added-repo');
 
   const newFavoriteItem = document.createRange().createContextualFragment(
     `<li class="added-repo__item">
-        <div><p>Name: ${this.dataset.name}</p>
-          <p>Owner: ${this.dataset.owner}</p>
-          <p>Stars: ${this.dataset.stars}</p>
+        <div><p>Name: ${name}</p>
+          <p>Owner: ${login}</p>
+          <p>Stars: ${star}</p>
       </div>
       <img src="close.png" class="delete" onClick="removeItemFromFavorite(this)">
     </li>`
