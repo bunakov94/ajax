@@ -1,0 +1,90 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  color: #000;
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-wrapper {
+  width: 660px;
+  height: 100%;
+  min-height: 763px;
+  background: #c4c4c4;
+  display: flex;
+  flex-direction: column;
+  padding: 60px 80px;
+}
+
+.search-form {
+  width: 500px;
+  margin-bottom: 50px;
+}
+
+.search-form__input {
+  width: 500px;
+  height: 60px;
+  outline: none;
+  border: none;
+  font-size: 48px;
+  padding: 5px 13px;
+}
+
+.search-form__input:focus {
+  outline: 3px solid skyblue;
+}
+
+.search-form__result {
+  background: #e3e3e3;
+  width: 500px;
+  list-style: none;
+  font-size: 30px;
+  position: absolute;
+}
+
+.search-form__item {
+  border: 2px solid #000000;
+  height: 44px;
+  padding: 0 13px;
+}
+
+.search-form__item:hover {
+  background: skyblue;
+}
+
+.added-repo {
+  font-size: 24px;
+  background: #e27beb;
+  margin-top: auto;
+}
+
+.added-repo__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border: 1px solid #000000;
+  list-style: none;
+}
+.delete {
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+}
+/* .added-repo__item::after {
+  position: absolute;
+  content: '';
+  right: 0;
+  top: 0;
+  height: 30px;
+  width: 30px;
+  background: url(delete.svg) no-repeat center center;
+} */
