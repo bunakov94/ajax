@@ -12,61 +12,66 @@ const debounce = (fn, debounceTime = 0) => {
     timeout = setTimeout(deferredCall, debounceTime);
   };
 };
+function removeItemFromFavorite(context) {
+  context.parentElement.remove();
+}
+function clearSearchResult() {
+  const searchResult = document.querySelector('.search-form__result');
 
-const form = document.querySelector('.search-form__input');
-const added = document.querySelector('.added-repo');
-const ul = document.querySelector('.search-form__result');
-const getData = debounce(async function () {
-  const lis = ul.querySelectorAll('li');
-  for (const li of lis) {
-    li.remove();
+  const searchResultItems = searchResult.querySelectorAll('li');
+  for (const searchResultItem of searchResultItems) {
+    searchResultItem.remove();
   }
+}
+function renderSearchResult({ items }) {
+  for (const {
+    name,
+    stargazers_count: star,
+    owner: { login },
+  } of items) {
+    const searchResult = document.querySelector('.search-form__result');
+
+    const searchResultItem = document.createElement('li');
+    searchResultItem.classList.add('search-form__item');
+    searchResultItem.textContent = `${name}`;
+    searchResultItem.dataset.name = `${name}`;
+    searchResultItem.dataset.owner = `${login}`;
+    searchResultItem.dataset.stars = `${star}`;
+    searchResultItem.addEventListener('click', addItemToFavorite);
+    searchResult.appendChild(searchResultItem);
+  }
+}
+function addItemToFavorite() {
+  const favoriteList = document.querySelector('.added-repo');
+
+  const newFavoriteItem = document.createRange().createContextualFragment(
+    `<li class="added-repo__item">
+        <div><p>Name: ${this.dataset.name}</p>
+          <p>Owner: ${this.dataset.owner}</p>
+          <p>Stars: ${this.dataset.stars}</p>
+      </div>
+      <img src="close.png" class="delete" onClick="removeItemFromFavorite(this)">
+    </li>`
+  );
+  favoriteList.append(newFavoriteItem);
+  form.value = '';
+  clearSearchResult();
+}
+const getData = debounce(async function () {
+  clearSearchResult();
   try {
     if (form.value.length > 0) {
       await fetch(
         `https://api.github.com/search/repositories?q=${this.value}&per_page=5`
       )
         .then((res) => res.json())
-        .then((res) => {
-          for (const {
-            name,
-            stargazers_count,
-            owner: { login },
-          } of res.items) {
-            const li = document.createElement('li');
-            li.classList.add('search-form__item');
-            li.textContent = `${name}`;
-            li.dataset.name = `${name}`;
-            li.dataset.owner = `${login}`;
-            li.dataset.stars = `${stargazers_count}`;
-            li.addEventListener('click', function () {
-              const add = document.createElement('li');
-              add.classList.add('added-repo__item');
-              add.innerHTML = `<div><p>Name: ${this.dataset.name}</p>
-                                <p>Owner: ${this.dataset.owner}</p>
-                                <p>Stars: ${this.dataset.stars}</p></div>`;
-
-              const img = document.createElement('img');
-              img.classList.add('delete');
-              img.src = 'close.png';
-              img.addEventListener('click', function () {
-                this.parentElement.remove();
-              });
-              add.appendChild(img);
-              added.appendChild(add);
-              form.value = '';
-              const lis = ul.querySelectorAll('li');
-              for (const li of lis) {
-                li.remove();
-              }
-            });
-            ul.appendChild(li);
-          }
-        });
+        .then((res) => renderSearchResult(res));
     }
   } catch (error) {
     console.error(error);
   }
 }, 500);
+
+const form = document.querySelector('.search-form__input');
 
 form.addEventListener('input', getData);
