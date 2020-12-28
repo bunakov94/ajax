@@ -12,18 +12,19 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="search-wrapper">
-      <div class="search-form">
+    <div class="search">
+      <div class="search__form">
         <input
           type="search"
           name="search-repo"
           id="search-repo"
-          class="search-form__input"
+          class="input"
           placeholder="Type your request"
+          tabindex="0"
         />
-        <ul class="search-form__result"></ul>
+        <div class="search__result"></div>
       </div>
-      <ul class="added-repo"></ul>
+      <div class="favorite-list"></div>
     </div>
     <script src="index.js"></script>
   </body>

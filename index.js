@@ -1,3 +1,6 @@
+const searchResult = document.querySelector('.search__result');
+const favoriteList = document.querySelector('.favorite-list');
+
 const debounce = (fn, debounceTime = 0) => {
   let timeout;
 
@@ -15,49 +18,38 @@ const debounce = (fn, debounceTime = 0) => {
 function removeItemFromFavorite(context) {
   context.parentElement.remove();
 }
-function clearSearchResult() {
-  const searchResult = document.querySelector('.search-form__result');
-
-  const searchResultItems = searchResult.querySelectorAll('li');
-  for (const searchResultItem of searchResultItems) {
-    searchResultItem.remove();
-  }
-}
 function renderSearchResult({ items }) {
   for (const {
     name,
     stargazers_count: star,
     owner: { login },
   } of items) {
-    const searchResult = document.querySelector('.search-form__result');
-
-    const searchResultItem = document.createElement('li');
-    searchResultItem.classList.add('search-form__item');
+    const searchResultItem = document.createElement('button');
+    searchResultItem.classList.add('result-item');
     searchResultItem.textContent = `${name}`;
     searchResultItem.onclick = () => addItemToFavorite({ name, star, login });
     searchResult.appendChild(searchResultItem);
   }
 }
 function addItemToFavorite({ name, star, login }) {
-  const favoriteList = document.querySelector('.added-repo');
-
   const newFavoriteItem = document.createRange().createContextualFragment(
-    `<li class="added-repo__item">
-        <div><p>Name: ${name}</p>
+    `<div class="favorite-list__item">
+        <div>
+          <p>Name: ${name}</p>
           <p>Owner: ${login}</p>
           <p>Stars: ${star}</p>
       </div>
-      <img src="close.png" class="delete" onClick="removeItemFromFavorite(this)">
-    </li>`
+      <button class="delete" onClick="removeItemFromFavorite(this)"><img src="close.png" class="delete__img"></button>
+    </div>`
   );
   favoriteList.append(newFavoriteItem);
-  form.value = '';
-  clearSearchResult();
+  input.value = '';
+  searchResult.innerHTML = '';
 }
 const getData = debounce(async function () {
-  clearSearchResult();
+  searchResult.innerHTML = '';
   try {
-    if (form.value.length > 0) {
+    if (input.value.length > 0) {
       await fetch(
         `https://api.github.com/search/repositories?q=${this.value}&per_page=5`
       )
@@ -69,6 +61,6 @@ const getData = debounce(async function () {
   }
 }, 500);
 
-const form = document.querySelector('.search-form__input');
+const input = document.querySelector('.input');
 
-form.addEventListener('input', getData);
+input.addEventListener('input', getData);
